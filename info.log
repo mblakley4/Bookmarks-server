@@ -17,3 +17,12 @@
 {"message":"Rating is not valid","level":"error"}
 {"message":"Bookmark with id 050b596f-47f0-4ad1-bb19-a5555279ec49 created","level":"info"}
 {"message":"Bookmark with id 2 deleted","level":"info"}
+{"message":"Unauthorized request to path: /","level":"error"}
+{"message":"Unauthorized request to path: /","level":"error"}
+{"message":"Unauthorized request to path: /bookmarks","level":"error"}
+{"message":"Unauthorized request to path: /bookmarks","level":"error"}
+{"message":"Unauthorized request to path: /bookmarks","level":"error"}
+{"message":"bookmark with id 123456 not found.","level":"error"}
+{"message":"bookmark with id 123456 not found.","level":"error"}
+{"message":"bookmark with id 123456 not found.","level":"error"}
+{"message":"bookmark with id 11 not found.","level":"error"}
