@@ -1,9 +1,9 @@
 const express = require('express')
 const uuid = require('uuid/v4')
 const logger = require('./logger')
-// const { bookmarks } = require('./store')
 const BookmarksService = require('./bookmarks-service')
 const xss = require('xss')
+const path = require('path')
 
 const bookmarkRouter = express.Router()
 const bodyParser = express.json()
@@ -17,7 +17,7 @@ const serializeBookmark = bookmark => ({
 })
 
 bookmarkRouter
-  .route('/bookmarks')
+  .route('/')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db')
     BookmarksService.getAllBookmarks(knexInstance)
@@ -56,7 +56,7 @@ bookmarkRouter
         logger.info(`Bookmark with id ${bookmark.id} created`);
         res
           .status(201)
-          .location(`/bookmarks/${bookmark.id}`)
+          .location(path.posix.join(req.originalUrl, `/${bookmark.id}`))
           .json(serializeBookmark(bookmark))
       })
       .catch(next)
@@ -64,7 +64,7 @@ bookmarkRouter
   })
 
 bookmarkRouter
-  .route('/bookmarks/:bookmark_id')
+  .route('/:bookmark_id')
   .all((req, res, next) => {
     const { bookmark_id } = req.params
     BookmarksService.getById(
@@ -96,6 +96,29 @@ bookmarkRouter
     )
       .then(() => {
         logger.info(`Bookmark with id ${bookmark_id} deleted`)
+        res.status(204).end()
+      })
+      .catch(next)
+  })
+  .patch(bodyParser, (req, res, next) => {
+    const { title, url, description, rating } = req.body
+    const bookmarkToUpdate = { title, url, description, rating }
+
+    const numberOfValues = Object.values(bookmarkToUpdate).filter(Boolean).length
+    if (numberOfValues === 0) {
+     return res.status(400).json({
+       error: {
+         message: `Request body must contain either 'title', 'url', 'description' or 'rating'`
+       }
+     })
+    }
+
+    BookmarksService.updateBookmark(
+      req.app.get('db'),
+      req.params.bookmark_id,
+      bookmarkToUpdate
+    )
+      .then(numRowsAffected => {
         res.status(204).end()
       })
       .catch(next)
