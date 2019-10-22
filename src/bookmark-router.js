@@ -26,6 +26,7 @@ bookmarkRouter
       })
       .catch(next)
   })
+
   .post(bodyParser, (req, res, next) => {
     const { title, url, description, rating } = req.body;
     const reqFields = { title, url, rating}
